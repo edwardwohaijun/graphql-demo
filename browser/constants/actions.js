@@ -1,0 +1,4 @@
+module.exports = {
+  ADD_COMMENT: 'ADD_COMMENT',
+  REMOVE_COMMENT: 'REMOVE_COMMENT'
+};
