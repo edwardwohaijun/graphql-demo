@@ -1,22 +1,27 @@
 import React, {Component} from 'react';
 import timeago from 'timeago.js';
 
-const RepoList = ({data, isShort, repoClickHanlder}) => {
-  return <ul>
+const RepoList = ({data, isShort, repoClickHanlder, defaultRepoIdx}) => {
+  var style;
+  return <ul style={{paddingLeft: 0}}>
     {data.repositories.edges.map((item, idx) => {
+      style = {borderBottom: '1px #e1e4e8 solid', listStyle: 'none'};
+      if (defaultRepoIdx == idx) style.backgroundColor = '#eee';
       if (isShort) {
         return (
-            <li key={item.node.name}
-                style={{paddingBottom: 24, borderBottom: '1px #e1e4e8 solid', listStyle: 'none'}}>
+            <li key={item.node.name} className='repoItem' onClick={() => repoClickHanlder(idx)}
+                style={style}>
               <div style={{display: 'inline-block', marginBottom: 4, boxSizing: 'border-box'}}>
-                <h3 style={{fontSize: 20, fontWeight: 600}}><a href='#'>{item.node.name}</a></h3>
+                <h3 style={{fontSize: 20, fontWeight: 600}}>{item.node.name}</h3>
               </div>
             </li>
         )
       }
+
+      style.paddingBottom = 24;
       return (
-          <li key={item.node.name}
-              style={{paddingBottom: 24, borderBottom: '1px #e1e4e8 solid', listStyle: 'none'}}>
+          <li key={item.node.name} className='repoItem' onClick={() => repoClickHanlder(idx)}
+              style={style}>
             <div style={{display: 'inline-block', marginBottom: 4, boxSizing: 'border-box'}}>
               <h3 style={{fontSize: 20, fontWeight: 600}}>{item.node.name}</h3>
             </div>
@@ -44,5 +49,5 @@ const RepoList = ({data, isShort, repoClickHanlder}) => {
           </li>)
     })}
   </ul>;
-}
+};
 export default RepoList

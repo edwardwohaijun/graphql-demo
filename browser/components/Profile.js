@@ -30,8 +30,8 @@ class Profile extends Component {
               <li style={{paddingTop: 4}}>{data.websiteUrl}</li>
             </ul>
           </div>
-          <div style={{width: 735}}>
-            <RepoList data={data} isShort={false} repoClickHanlder={this.props.repoClickHanlder}/>
+          <div style={{width: 735, paddingLeft: 40}}>
+            <RepoList data={data} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
         </div>
     )}

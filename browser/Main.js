@@ -21,7 +21,7 @@ class Main extends Component {
     super(props);
     this.state = {
       loginName: 'edwardwohaijun',
-      defaultRepoIdx: 1     // default commit history, issue list to show on tab2, tab3
+      defaultRepoIdx: 0     // default commit history, issue list to show on tab2, tab3
     };
   }
   handleChange = e => {

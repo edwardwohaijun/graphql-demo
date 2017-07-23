@@ -12,13 +12,13 @@ class CommitsHist extends Component {
   }
 
   render (){
-    console.log('commit hist: ', this.props.data.repositories.edges[1].node.ref.target.history.edges);
+    console.log('commit hist: ', this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.ref.target.history.edges);
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
-            <RepoList data={this.props.data} isShort={true}/>
+            <RepoList data={this.props.data} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
-          <div style={{width: 735}}>
+          <div style={{width: 735, paddingLeft: 40}}>
             <Table fixedHeader={true} fixedFooter={true} selectable={false}>
               <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
