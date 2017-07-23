@@ -21,7 +21,7 @@ class Main extends Component {
     super(props);
     this.state = {
       loginName: 'edwardwohaijun',
-      defaultRepoIdx: 0     // default commit history, issue list to show on tab2, tab3
+      defaultRepoIdx: 1     // default commit history, issue list to show on tab2, tab3
     };
   }
   handleChange = e => {
@@ -30,8 +30,8 @@ class Main extends Component {
   changeTab = e => {
 
   };
-  handleRepoClick = e => {
-
+  handleRepoClick = idx => {
+    this.setState({defaultRepoIdx: idx})
   };
 
   render() {
@@ -45,16 +45,16 @@ class Main extends Component {
               <CircularProgress size={80} thickness={4} /> :
               <Tabs>
                 <Tab label="Profile">
-                  <Profile data={this.props.data.user}/>
+                  <Profile data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
                 <Tab label="Commits">
-                  <CommitsHist data={this.props.data.user} />
+                  <CommitsHist data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
                 <Tab label="Issue list">
-                  <IssuesList data={this.props.data.user} />
+                  <IssuesList data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
                 <Tab label="Charts">
-                  <Charts data={this.props.data.user} />
+                  <Charts data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
               </Tabs>
           }

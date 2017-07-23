@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import Avatar from 'material-ui/Avatar';
 import RepoList from './RepoList';
 import timeago from 'timeago.js';
-//import CircularProgress from 'material-ui/CircularProgress';
-//import {grey50, grey100, grey500, grey800} from 'material-ui/styles/colors';
 
 class Profile extends Component {
   constructor(props) {
@@ -33,13 +31,9 @@ class Profile extends Component {
             </ul>
           </div>
           <div style={{width: 735}}>
-            <RepoList data={data}/>
+            <RepoList data={data} isShort={false} repoClickHanlder={this.props.repoClickHanlder}/>
           </div>
         </div>
     )}
 }
 export default Profile;
-
-//const mapStateToProps = state => ({buddies: state.peers.get('u'), posts: state.statusFeed, profile: state.profile});
-//const mapDispatchToProps = dispatch => bindActionCreators({addOneStatus, addManyStatus, replyStatus, clearOtherStatus, delStatus}, dispatch);
-//export default connect(mapStateToProps, mapDispatchToProps)(BuddyStatus);
