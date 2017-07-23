@@ -4,10 +4,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 //import {updateVideoPeer, startChatSession, addBadge, removeBadge, addNotice, addChatMsg, dumpChats, addBuddy, removeBuddy, removePeerChat, joinGroup} from './actions';
 import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
 import CircularProgress from 'material-ui/CircularProgress';
 import {blue500, red500, greenA200} from 'material-ui/styles/colors';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import TextField from 'material-ui/TextField';
+
+import Profile from './components/Profile';
+import CommitsHist from './components/CommitsHist';
+import IssuesList from './components/IssuesList';
+import Charts from './components/Charts';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -24,57 +29,41 @@ const styles = {
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loginName: 'edwardwohaijun'
+    };
   }
+  handleChange = e => {
+    this.setState({loginName: e.target.value})
+  };
 
   render() {
-    console.log('data: ', this.props.data);
+    console.log('data from github: ', this.props.data);
     return (
-        <div id='main-content'>
-          <Tabs>
-            <Tab label="Profile" >
-              <div>
-                <h2 style={styles.headline}>Tab One</h2>
-                <p>
-                  This is an example tab.
-                </p>
-                <p>
-                  You can put any sort of HTML or react component in here. It even keeps the component state!
-                </p>
-
-              </div>
-            </Tab>
-            <Tab label="Commits" >
-              <div>
-                <h2 style={styles.headline}>Tab Two</h2>
-                <p>
-                  This is another example tab.
-                </p>
-              </div>
-            </Tab>
-            <Tab
-                label="Issue list"
-                >
-              <div>
-                <h2 style={styles.headline}>Tab Three</h2>
-                <p>
-                  This is a third example tab.
-                </p>
-              </div>
-            </Tab>
-            <Tab
-                label="Charts"
-                >
-              <div>
-                <h2 style={styles.headline}>Tab Three</h2>
-                <p>
-                  Charts
-                </p>
-              </div>
-            </Tab>
-          </Tabs>
+        <div>
+          <TextField hintText="Github login name" floatingLabelText="Github login name"
+                     value={this.state.loginName} onChange={this.handleChange} />
+          <RaisedButton label="Go" primary={true} style={{margin: 12}} disabled={this.props.data.loading} /><br />
+          {this.props.data.loading ?
+              <CircularProgress size={80} thickness={4} /> :
+              <Tabs>
+                <Tab label="Profile">
+                  <Profile  data={this.props.data.user}/>
+                </Tab>
+                <Tab label="Commits">
+                  <CommitsHist data={this.props.data.user} />
+                </Tab>
+                <Tab label="Issue list">
+                  <IssuesList data={this.props.data.user} />
+                </Tab>
+                <Tab label="Charts">
+                  <Charts data={this.props.data.user} />
+                </Tab>
+              </Tabs>
+          }
         </div>
-    )}
+    );
+  }
 }
 
 export default Main;
