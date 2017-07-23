@@ -66,27 +66,25 @@ const FeedWithData  = graphql(gql`{
           edges{
             node{
               ref(qualifiedName: "master") {
-            target {
-              ... on Commit {
-                id
-                history(first: 30){
-
-                  pageInfo {
-                    hasNextPage
-                  }
-                  edges{
-                    node {
-                      oid, message
-                      author{
-                        name email date
+                target {
+                  ... on Commit {
+                    id
+                    history(first: 30){
+                      pageInfo {
+                      hasNextPage
+                    }
+                    edges{
+                      node {
+                        oid, message
+                        author{
+                          name email date
+                        }
                       }
                     }
                   }
                 }
               }
             }
-          }
-
               name, description, primaryLanguage{color name}, pushedAt
               stargazers{
                 totalCount

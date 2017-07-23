@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 //import {updateVideoPeer, startChatSession, addBadge, removeBadge, addNotice, addChatMsg, dumpChats, addBuddy, removeBuddy, removePeerChat, joinGroup} from './actions';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import {blue500, red500, greenA200} from 'material-ui/styles/colors';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import TextField from 'material-ui/TextField';
 
@@ -17,24 +16,22 @@ import Charts from './components/Charts';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-const styles = {
-  headline: {
-    fontSize: 24,
-    paddingTop: 16,
-    marginBottom: 12,
-    fontWeight: 400,
-  },
-};
-
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loginName: 'edwardwohaijun'
+      loginName: 'edwardwohaijun',
+      defaultRepoIdx: 0     // default commit history, issue list to show on tab2, tab3
     };
   }
   handleChange = e => {
     this.setState({loginName: e.target.value})
+  };
+  changeTab = e => {
+
+  };
+  handleRepoClick = e => {
+
   };
 
   render() {
@@ -48,7 +45,7 @@ class Main extends Component {
               <CircularProgress size={80} thickness={4} /> :
               <Tabs>
                 <Tab label="Profile">
-                  <Profile  data={this.props.data.user}/>
+                  <Profile data={this.props.data.user}/>
                 </Tab>
                 <Tab label="Commits">
                   <CommitsHist data={this.props.data.user} />
