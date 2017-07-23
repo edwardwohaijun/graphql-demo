@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import {fromJS} from 'immutable';
 import {Provider} from 'react-redux';
@@ -6,12 +6,26 @@ import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose} from 'redux';
 import reducers from './reducers';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {grey500, grey900} from 'material-ui/styles/colors';
 import Main from './Main'
 
+const gitToken = localStorage.getItem('github-token');
 import {ApolloClient, createNetworkInterface } from 'apollo-client';
-import {gql, graphql, ApolloProvider} from 'react-apollo';
+import {gql, graphql} from 'react-apollo';
+const networkInterface = createNetworkInterface({
+  uri: 'https://api.github.com/graphql'
+});
+networkInterface.use([{
+  applyMiddleware(req, next){
+    if (!req.options.headers){
+      req.options.headers = {}
+    }
+    req.options.headers.Authorization = 'bearer ' + gitToken;
+    req.options.headers['Content-Type'] = 'application/json';
+    next()
+  }
+}]);
+
+const gqlClient = new ApolloClient({networkInterface});
 
 var initialState = {
   comments: fromJS([])
@@ -32,14 +46,17 @@ if (process.env.NODE_ENV === 'development'){
   }
 }
 
-const muiTheme = getMuiTheme({
-  tabs: {backgroundColor: '#E0E0E0', selectedTextColor: grey900, textColor: grey500}
-});
+const TrainerQuery = gql`
+  query TrainerQuery {
+    Trainer(name: "Edward Wo") {
+      name
+    }
+  }
+`;
 
-const Feed = ({data}) => {
-  return  <MuiThemeProvider muiTheme={muiTheme}><Main data={data} /></MuiThemeProvider>
-};
-const FeedWithData  = graphql(gql`{
+gqlClient.query({
+  query: gql`
+    query {
       user(login: "edwardwohaijun"){
         login, name, avatarUrl, websiteUrl, bio, email, location
         starredRepositories {
@@ -81,42 +98,19 @@ const FeedWithData  = graphql(gql`{
           }
         }
       }
-}`, { options: { notifyOnNetworkStatusChange: false } })(Feed);
-
-function createClient() {
-  const networkInterface = createNetworkInterface({
-    uri: 'https://api.github.com/graphql'
-  });
-  networkInterface.use([{
-    applyMiddleware(req, next){
-      if (!req.options.headers){
-        req.options.headers = {}
-      }
-      req.options.headers.Authorization = 'bearer ' + localStorage.getItem('github-token');
-      req.options.headers['Content-Type'] = 'application/json';
-      next()
     }
-  }]);
-  return new ApolloClient({
-    networkInterface: networkInterface
-  });
-}
-
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <ApolloProvider client={createClient()} store={store}>
-        <FeedWithData />
-      </ApolloProvider>
-    );
-  }
-}
-
-ReactDOM.render(
-    <App />, document.getElementById('main-content-wrapper')
-);
+  `
+})
+  .then(data => {
+      console.log('data from querying gql: ', data);
+      const App = () => {
+        return <MuiThemeProvider><Main /></MuiThemeProvider>
+      };
+      ReactDOM.render(
+          <Provider store={store}><App /></Provider>, document.getElementById('main-content-wrapper')
+      );
+  })
+  .catch(err => {
+      console.log('err queyring gql: ', err)
+  })
+;
