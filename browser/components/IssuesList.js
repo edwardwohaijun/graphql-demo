@@ -1,24 +1,77 @@
 import React, {Component} from 'react';
-//import {addOneStatus, addManyStatus, replyStatus, clearOtherStatus, delStatus} from '../../actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-//import RaisedButton from 'material-ui/RaisedButton';
-//import FlatButton from 'material-ui/FlatButton';
-//import IconButton from 'material-ui/IconButton';
-//import FontIcon from 'material-ui/FontIcon';
-//import CircularProgress from 'material-ui/CircularProgress';
-//import {grey50, grey100, grey500, grey800} from 'material-ui/styles/colors';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import timeago from 'timeago.js';
+import RepoList from './RepoList';
+import NewComment from './NewComment';
 
 class IssuesList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectedIssueIdx: 0
+    };
   }
+  handleSelect = (event, index, value) => this.setState({selectedIssueIdx: value});
 
   render (){
+    var issues = this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.issues;
+    var currentIssueComments = [], currentIssueBody = '', currentIssueID = null, currentIssueBy = '', currentIssueAt;
+    if (issues.edges[ this.state.selectedIssueIdx ]){ // not all repo have issues, check against null
+      currentIssueComments = issues.edges[ this.state.selectedIssueIdx ].node.comments.edges;
+      currentIssueBody = issues.edges[ this.state.selectedIssueIdx ].node.body;
+      currentIssueID = issues.edges[ this.state.selectedIssueIdx ].node.id;
+      currentIssueBy = issues.edges[ this.state.selectedIssueIdx ].node.author.login;
+      currentIssueAt = timeago().format(issues.edges[ this.state.selectedIssueIdx ].node.createdAt);
+    }
+
     return (
-        <div>
-          IssueList page
+        <div style={{marginTop: 20, display: 'flex'}}>
+          <div style={{width: 245}}>
+            <RepoList data={this.props.data} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
+          </div>
+          <div style={{width: 735, paddingLeft: 40}}>
+            <SelectField floatingLabelText="Issue list" value={this.state.selectedIssueIdx} onChange={this.handleSelect}>
+              {
+                issues.edges.map((item, idx) => {
+                  return <MenuItem key={item.node.title} value={idx} primaryText={item.node.title} />
+                })
+              }
+            </SelectField>
+            {
+              issues.edges.length == 0
+                  ? null
+                  : <span style={{marginLeft: 18, top: -10, position: 'relative', fontSize: 11, color: 'gray'}}>raised by: {currentIssueBy} at {currentIssueAt}</span>
+            }
+            <div style={{border: '1px #e1e4e8 solid', height: 80, marginTop: 18, padding: 8}}>
+              {currentIssueBody}
+            </div>
+            <NewComment subjectId={currentIssueID}/>
+            <Table fixedHeader={true} fixedFooter={true} selectable={false}>
+              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                <TableRow>
+                  <TableHeaderColumn style={{width:100}}>Comment date</TableHeaderColumn>
+                  <TableHeaderColumn style={{width:100}}>Comment author</TableHeaderColumn>
+                  <TableHeaderColumn>Content</TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody displayRowCheckbox={false}>
+                {
+                  currentIssueComments.map((item, idx) => {
+                      return (
+                        <TableRow key={item.node.id} displayBorder={false}>
+                          <TableRowColumn style={{width:100}}>{timeago().format( item.node.createdAt )}</TableRowColumn>
+                          <TableRowColumn style={{width:100}}>{item.node.author.login }</TableRowColumn>
+                          <TableRowColumn>{item.node.body}</TableRowColumn>
+                        </TableRow>)
+                    })
+                }
+              </TableBody>
+            </Table>
+          </div>
         </div>
     )}
 }

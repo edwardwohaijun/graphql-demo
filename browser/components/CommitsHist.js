@@ -12,7 +12,10 @@ class CommitsHist extends Component {
   }
 
   render (){
-    console.log('commit hist: ', this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.ref.target.history.edges);
+    console.log('commit hist: ', this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node);
+    //console.log('commit hist: ', this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.ref.target.history.edges);
+    var ref = this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.ref; // sometimes ref is null, because I grab the commit history from master branch
+    // but some repo has no master branch.
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
@@ -29,7 +32,7 @@ class CommitsHist extends Component {
               </TableHeader>
               <TableBody displayRowCheckbox={false}>
                 {
-                  this.props.data.repositories.edges[this.props.defaultRepoIdx].node.ref.target.history.edges.map((item, idx) => {
+                  !ref ? null : ref.target.history.edges.map((item, idx) => {
                     return (
                         <TableRow key={item.node.oid.substr(8)} displayBorder={false}>
                           <TableRowColumn style={{width:100}}>{timeago().format(item.node.author.date)}</TableRowColumn>
@@ -46,6 +49,3 @@ class CommitsHist extends Component {
 }
 export default CommitsHist;
 
-//const mapStateToProps = state => ({buddies: state.peers.get('u'), posts: state.statusFeed, profile: state.profile});
-//const mapDispatchToProps = dispatch => bindActionCreators({addOneStatus, addManyStatus, replyStatus, clearOtherStatus, delStatus}, dispatch);
-//export default connect(mapStateToProps, mapDispatchToProps)(BuddyStatus);

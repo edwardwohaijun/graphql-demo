@@ -42,36 +42,25 @@ const Feed = ({data}) => {
 const FeedWithData  = graphql(gql`{
       user(login: "edwardwohaijun"){
         login, name, avatarUrl, websiteUrl, bio, email, location
-        starredRepositories {
-          totalCount
-        }
-        contributedRepositories{
-          totalCount
-        }
-        followers{
-          totalCount
-        }
-        following{
-          totalCount
-        }
-        starredRepositories{
-          totalCount
-        }
-        watching{
-          totalCount
-        }
+        starredRepositories { totalCount }
+        contributedRepositories { totalCount }
+        followers { totalCount }
+        following { totalCount }
+        starredRepositories{ totalCount }
+        watching { totalCount }
         repositories(first: 5){
           totalCount
-
           edges{
             node{
               ref(qualifiedName: "master") {
                 target {
                   ... on Commit {
-                    id
-                    history(first: 30){
+                    history(first: 2){
                       pageInfo {
-                      hasNextPage
+                        hasNextPage
+                        hasPreviousPage
+                        startCursor
+                        endCursor
                     }
                     edges{
                       node {
@@ -80,29 +69,37 @@ const FeedWithData  = graphql(gql`{
                           name email date
                         }
                       }
+                      cursor
                     }
                   }
                 }
               }
             }
               name, description, primaryLanguage{color name}, pushedAt
-              stargazers{
+              stargazers { totalCount }
+              forks { totalCount }
+              watchers { totalCount }
+              issues(last:10, states:OPEN){
                 totalCount
-              }
-              forks{
-                totalCount
-              }
-              watchers{
-                totalCount
-              }
-              issues(states:[OPEN]){
-                totalCount
+                edges{
+                  node {
+                    id, author{login, avatarUrl}, createdAt, title, body
+                    comments(first:10){
+                      totalCount
+                      edges{
+                        node{
+                          author{login, avatarUrl}, body, createdAt, id
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
-}`, { options: { notifyOnNetworkStatusChange: false } })(Feed);
+}`, { options: { notifyOnNetworkStatusChange: true } })(Feed);
 
 function createClient() {
   const networkInterface = createNetworkInterface({
