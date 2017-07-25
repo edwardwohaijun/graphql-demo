@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RepoList from './RepoList';
 
 var Highcharts = require('highcharts');
@@ -42,6 +43,7 @@ const fillDrillDown = (srcData, byWhich) => {
   return drilldown
 };
 
+var chart;
 class Chart extends Component {
   constructor(props) {
     super(props);
@@ -71,7 +73,25 @@ class Chart extends Component {
     });
     options.chart.renderTo = 'chart-container';
     options.chart.type = 'pie';
-    new Highcharts.Chart(options);
+    chart = new Highcharts.Chart(options);
+  };
+
+  onSelect = (evt, value) => {
+    this.setState({drilldownBy: value})
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevState.drilldownBy != this.state.drilldownBy){ // without this condition, the following code would run twice when this component is loaded
+      console.log('old drilldownby/new: ', prevState.drilldownBy, '/', this.state.drilldownBy);
+      options.drilldown = fillDrillDown(this.props.data, this.state.drilldownBy);
+
+      Highcharts.setOptions({
+        lang: {drillUpText: '◁ Back to {series.name}'}
+      });
+      options.chart.renderTo = 'chart-container';
+      options.chart.type = 'pie';
+      chart = new Highcharts.Chart(options);
+    }
   };
 
   render (){
@@ -81,9 +101,19 @@ class Chart extends Component {
             <RepoList changeTab={()=>{}} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
+            <span>Drill down by:</span>
+            <RadioButtonGroup style={{marginTop: 20}} onChange={this.onSelect} name="drillDownBy" defaultSelected="issues">
+              <RadioButton value="issues" label="issues" style={styles.radioButton}/>
+              <RadioButton value="forks" label="forks" style={styles.radioButton}/>
+              <RadioButton value="stargazers" label="stargazers" style={styles.radioButton}/>
+              <RadioButton value="watchers" label="watchers" style={styles.radioButton} />
+            </RadioButtonGroup>
             <div id='chart-container'></div>
           </div>
         </div>
     )}
 }
+const styles = {
+  radioButton: {marginBottom: 16}
+};
 export default Chart;
