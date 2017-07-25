@@ -31,8 +31,8 @@ class NewComment extends Component {
   render (){
     return (
         <div>
-          <TextField id="newComment" value={this.state.comment} onChange={this.handleChange} />
-          <RaisedButton onClick={this.onClick} disabled={!this.props.subjectId} label="submit comment" primary={true} style={{margin: 12}} />
+          <TextField id="newComment" value={this.state.comment} multiLine={true} rowsMax={2} rows={2} style={{width: '100%'}} onChange={this.handleChange} hintText='Leave a comment' maxLength='300'/>
+          <RaisedButton onClick={this.onClick} disabled={!this.props.subjectId} label="submit comment" primary={true} style={{margin: '16 0'}} />
         </div>
     )
   }

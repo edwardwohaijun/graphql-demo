@@ -13,7 +13,6 @@ class Profile extends Component {
   }
 
   render (){
-    console.log('profile data: ', this.props.data);
     var data = this.props.data;
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
@@ -31,7 +30,7 @@ class Profile extends Component {
             </ul>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            <RepoList data={data} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
+            <RepoList repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
         </div>
     )}

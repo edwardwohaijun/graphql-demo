@@ -17,8 +17,14 @@ class IssuesList extends Component {
   }
   handleSelect = (event, index, value) => this.setState({selectedIssueIdx: value});
 
+  componentWillReceiveProps = nextProps => { // when we are at repoA which has 10 issues, looking at issue 10, then switch to repoB which has only 2 issues
+    if (nextProps.defaultRepoIdx != this.props.defaultRepoIdx){ // but issueIdx still points to 10, thus, whenever user switch to other repo, reset "selectedIssueIdx" to 0
+      this.setState({selectedIssueIdx: 0})
+    }
+  };
+
   render (){
-    var issues = this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.issues;
+    var issues = this.props.data[ this.props.defaultRepoIdx ].node.issues;
     var currentIssueComments = [], currentIssueBody = '', currentIssueID = null, currentIssueBy = '', currentIssueAt;
     if (issues.edges[ this.state.selectedIssueIdx ]){ // not all repo have issues, check against null
       currentIssueComments = issues.edges[ this.state.selectedIssueIdx ].node.comments.edges;
@@ -31,7 +37,7 @@ class IssuesList extends Component {
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
-            <RepoList data={this.props.data} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
+            <RepoList repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
             <SelectField floatingLabelText="Issue list" value={this.state.selectedIssueIdx} onChange={this.handleSelect}>
@@ -46,7 +52,7 @@ class IssuesList extends Component {
                   ? null
                   : <span style={{marginLeft: 18, top: -10, position: 'relative', fontSize: 11, color: 'gray'}}>raised by: {currentIssueBy} at {currentIssueAt}</span>
             }
-            <div style={{border: '1px #e1e4e8 solid', height: 80, marginTop: 18, padding: 8}}>
+            <div style={{border: '1px #e1e4e8 solid', overflow: 'scroll', height: 80, marginTop: 18, padding: 8}}>
               {currentIssueBody}
             </div>
             <NewComment subjectId={currentIssueID}/>

@@ -12,14 +12,13 @@ class CommitsHist extends Component {
   }
 
   render (){
-    console.log('commit hist: ', this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node);
-    //console.log('commit hist: ', this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.ref.target.history.edges);
-    var ref = this.props.data.repositories.edges[ this.props.defaultRepoIdx ].node.ref; // sometimes ref is null, because I grab the commit history from master branch
+    console.log('inside commit: ', this.props.data);
+    var ref = this.props.data[ this.props.defaultRepoIdx ].node.ref; // sometimes ref is null, because I grab the commit history from master branch
     // but some repo has no master branch.
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
-            <RepoList data={this.props.data} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
+            <RepoList repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
             <Table fixedHeader={true} fixedFooter={true} selectable={false}>

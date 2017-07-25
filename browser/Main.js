@@ -12,18 +12,37 @@ import Profile from './components/Profile';
 import CommitsHist from './components/CommitsHist';
 import IssuesList from './components/IssuesList';
 import Charts from './components/Charts';
-
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
+
+var repoInfo = [], repoDetails = [], ownRepoCount = 0;
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loginName: 'edwardwohaijun',
-      defaultRepoIdx: 0     // default commit history, issue list to show on tab2, tab3
+      defaultRepoIdx: 0
     };
   }
+
+  componentWillReceiveProps = nextProps => {
+    if (!nextProps.data.loading){
+      nextProps.data.user.repositories.edges.forEach(r =>
+              repoInfo.push({
+                name: r.node.name, description: r.node.description,
+                primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt })
+      );
+      ownRepoCount = nextProps.data.user.repositories.edges.length;
+      nextProps.data.user.starredRepositories.edges.forEach(r =>
+              repoInfo.push({
+                name: r.node.name, description: r.node.description,
+                primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt })
+      );
+      repoDetails = nextProps.data.user.repositories.edges.concat(nextProps.data.user.starredRepositories.edges);
+    }
+  };
+
   handleChange = e => {
     this.setState({loginName: e.target.value})
   };
@@ -45,16 +64,16 @@ class Main extends Component {
               <CircularProgress size={80} thickness={4} /> :
               <Tabs>
                 <Tab label="Profile">
-                  <Profile data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                  <Profile data={this.props.data.user} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
-                <Tab label="Commits">
-                  <CommitsHist data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                <Tab label="Commit history">
+                  <CommitsHist data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
                 <Tab label="Issue list">
-                  <IssuesList data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                  <IssuesList data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
                 <Tab label="Charts">
-                  <Charts data={this.props.data.user} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                  <Charts data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
               </Tabs>
           }

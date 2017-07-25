@@ -42,39 +42,29 @@ const Feed = ({data}) => {
 const FeedWithData  = graphql(gql`{
       user(login: "edwardwohaijun"){
         login, name, avatarUrl, websiteUrl, bio, email, location
-        starredRepositories { totalCount }
-        contributedRepositories { totalCount }
-        followers { totalCount }
-        following { totalCount }
-        starredRepositories{ totalCount }
-        watching { totalCount }
-        repositories(first: 5){
+        starredRepositories(first: 5) {
           totalCount
           edges{
             node{
+              id
               ref(qualifiedName: "master") {
                 target {
                   ... on Commit {
-                    history(first: 2){
+                    history(first: 30){
                       pageInfo {
-                        hasNextPage
-                        hasPreviousPage
-                        startCursor
-                        endCursor
-                    }
-                    edges{
-                      node {
-                        oid, message
-                        author{
-                          name email date
-                        }
+                        hasNextPage, hasPreviousPage, startCursor, endCursor
                       }
-                      cursor
+                      edges{
+                        node {
+                          oid, message
+                          author{name, email, date}
+                        }
+                        cursor
+                      }
                     }
                   }
                 }
               }
-            }
               name, description, primaryLanguage{color name}, pushedAt
               stargazers { totalCount }
               forks { totalCount }
@@ -88,7 +78,58 @@ const FeedWithData  = graphql(gql`{
                       totalCount
                       edges{
                         node{
-                          author{login, avatarUrl}, body, createdAt, id
+                          author{login, avatarUrl}, body, createdAt, id, authorAssociation
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        contributedRepositories { totalCount }
+        followers { totalCount }
+        following { totalCount }
+        watching { totalCount }
+        repositories(first: 5){
+          totalCount
+          edges{
+            node{
+              id
+              ref(qualifiedName: "master") {
+                target {
+                  ... on Commit {
+                    history(first: 30){
+                      pageInfo {
+                        hasNextPage, hasPreviousPage, startCursor, endCursor
+                      }
+                      edges{
+                        node {
+                          oid, message
+                          author{name, email, date}
+                        }
+                        cursor
+                      }
+                    }
+                  }
+                }
+              }
+              name, description, primaryLanguage{color name}, pushedAt
+              stargazers { totalCount }
+              forks { totalCount }
+              watchers { totalCount }
+              issues(last:10, states:OPEN){
+                totalCount
+                edges{
+                  node {
+                    id, author{login, avatarUrl}, createdAt, title, body
+                    comments(first:10){
+                      totalCount
+                      edges{
+                        node{
+                          author{login, avatarUrl}, body, createdAt, id, authorAssociation
                         }
                       }
                     }
