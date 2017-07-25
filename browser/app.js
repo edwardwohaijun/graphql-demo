@@ -42,7 +42,7 @@ const Feed = ({data}) => {
 const FeedWithData  = graphql(gql`{
       user(login: "edwardwohaijun"){
         login, name, avatarUrl, websiteUrl, bio, email, location
-        starredRepositories(first: 5) {
+        starredRepositories(first: 10) {
           totalCount
           edges{
             node{

@@ -21,6 +21,7 @@ Finally, open your browser at http://127.0.0.1:3456
 * [React](https://github.com/facebook/react) - The view layer
 * [Material-ui](https://github.com/callemall/material-ui) - The UI library
 * [apollo-client](https://github.com/apollographql/apollo-client) - The GraphQL client
+* [Highcharts](https://github.com/highcharts/highcharts) - The JavaScript charting framework
 
 ## License
 
