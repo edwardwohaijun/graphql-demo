@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 class NewComment extends Component {
   constructor(props) {
     super(props);
-    this.state = {comment: ''}; // 为空， strip后为空， 不能submit
+    this.state = {comment: ''};
   }
 
   handleChange = e => {
@@ -30,7 +30,7 @@ class NewComment extends Component {
 
   render (){
     return (
-        <div>
+        <div style={{marginBottom: 28}}>
           <TextField id="newComment" value={this.state.comment} multiLine={true} rowsMax={2} rows={2} style={{width: '100%'}} onChange={this.handleChange} hintText='Leave a comment' maxLength='300'/>
           <RaisedButton onClick={this.onClick} disabled={!this.props.subjectId} label="submit comment" primary={true} style={{margin: '16 0'}} />
         </div>

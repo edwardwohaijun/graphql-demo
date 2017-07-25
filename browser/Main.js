@@ -11,7 +11,7 @@ import TextField from 'material-ui/TextField';
 import Profile from './components/Profile';
 import CommitsHist from './components/CommitsHist';
 import IssuesList from './components/IssuesList';
-import Charts from './components/Charts';
+import Chart from './components/Chart';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -23,13 +23,12 @@ class Main extends Component {
     this.state = {
       loginName: 'edwardwohaijun',
       defaultRepoIdx: 0,
-      currentTab: "profile" // 4 tabs, value range from 0 to 3
+      currentTab: "profile"
     };
   }
 
   componentWillReceiveProps = nextProps => {
     if (!nextProps.data.loading && !nextProps.data.error){
-      console.log('nextProsp:', nextProps.data);
       nextProps.data.user.repositories.edges.forEach(r =>
               repoInfo.push({
                 name: r.node.name, description: r.node.description,
@@ -49,7 +48,6 @@ class Main extends Component {
     this.setState({loginName: e.target.value})
   };
   changeTab = tabValue => {
-    console.log('I am being clicked, new tab: ', tabValue);
     this.setState({currentTab: tabValue})
   };
   handleRepoClick = idx => {
@@ -77,7 +75,7 @@ class Main extends Component {
                   <IssuesList data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
                 <Tab label="Charts" value="chart">
-                  <Charts data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                  <Chart data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
                 </Tab>
               </Tabs>
           }
@@ -87,6 +85,3 @@ class Main extends Component {
 }
 
 export default Main;
-//const mapStateToProps = state => ({ui: state.ui, profile: state.profile});
-//const mapDispatchToProps = dispatch => bindActionCreators({updateVideoPeer, startChatSession, addBadge, removeBadge, addNotice, addChatMsg, dumpChats, addBuddy, removeBuddy, removePeerChat, joinGroup}, dispatch);
-//export default connect(mapStateToProps, mapDispatchToProps)(Main);

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import timeago from 'timeago.js';
 import RepoList from './RepoList';
 
@@ -12,7 +11,6 @@ class CommitsHist extends Component {
   }
 
   render (){
-    console.log('inside commit: ', this.props.data);
     var ref = this.props.data[ this.props.defaultRepoIdx ].node.ref; // sometimes ref is null, because I grab the commit history from master branch
     // but some repo has no master branch.
     return (
@@ -21,27 +19,18 @@ class CommitsHist extends Component {
             <RepoList changeTab={()=>{}} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            <Table fixedHeader={true} fixedFooter={true} selectable={false}>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                <TableRow>
-                  <TableHeaderColumn style={{width:100}}>date</TableHeaderColumn>
-                  <TableHeaderColumn style={{width:100}}>author</TableHeaderColumn>
-                  <TableHeaderColumn>msg</TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {
-                  !ref ? null : ref.target.history.edges.map((item, idx) => {
-                    return (
-                        <TableRow key={item.node.oid.substr(8)} displayBorder={false}>
-                          <TableRowColumn style={{width:100}}>{timeago().format(item.node.author.date)}</TableRowColumn>
-                          <TableRowColumn style={{width:100}}>{item.node.author.name}</TableRowColumn>
-                          <TableRowColumn>{item.node.message}</TableRowColumn>
-                        </TableRow>)
-                  })
-                }
-              </TableBody>
-            </Table>
+            {
+              !ref ? null : ref.target.history.edges.map((item, idx) => {
+                return (
+                    <div style={{borderBottom: '1px #e1e4e8 solid', marginBottom: 18, padding: 12}} key={item.node.oid.substr(8)}>
+                      <div style={{marginBottom: 8}}>
+                        <span style={{color: 'gray', fontWeidht: 'bold'}}>{item.node.author.name} {timeago().format(item.node.author.date)}</span>
+                      </div>
+                      <div style={{maxHeight: 100, overflow: 'scroll'}}>{item.node.message}</div>
+                    </div>
+                )
+              })
+            }
           </div>
         </div>
     )}

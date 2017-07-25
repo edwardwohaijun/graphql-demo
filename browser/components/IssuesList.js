@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import timeago from 'timeago.js';
@@ -50,39 +49,29 @@ class IssuesList extends Component {
             {
               issues.edges.length == 0
                   ? null
-                  : <span style={{marginLeft: 18, top: -10, position: 'relative', fontSize: 11, color: 'gray'}}>raised by: {currentIssueBy} at {currentIssueAt}</span>
+                  : <span style={{marginLeft: 18, top: -10, position: 'relative', fontSize: 11, color: 'gray'}}>raised by: {currentIssueBy} {currentIssueAt}</span>
             }
             <div style={{border: '1px #e1e4e8 solid', overflow: 'scroll', height: 80, marginTop: 18, padding: 8}}>
               {currentIssueBody}
             </div>
             <NewComment subjectId={currentIssueID}/>
-            <Table fixedHeader={true} fixedFooter={true} selectable={false}>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                <TableRow>
-                  <TableHeaderColumn style={{width:100}}>Comment date</TableHeaderColumn>
-                  <TableHeaderColumn style={{width:100}}>Comment author</TableHeaderColumn>
-                  <TableHeaderColumn>Content</TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {
-                  currentIssueComments.map((item, idx) => {
-                      return (
-                        <TableRow key={item.node.id} displayBorder={false}>
-                          <TableRowColumn style={{width:100}}>{timeago().format( item.node.createdAt )}</TableRowColumn>
-                          <TableRowColumn style={{width:100}}>{item.node.author.login }</TableRowColumn>
-                          <TableRowColumn>{item.node.body}</TableRowColumn>
-                        </TableRow>)
-                    })
-                }
-              </TableBody>
-            </Table>
+
+            <span>Comments</span>
+            <hr style={{border: 0, backgroundColor: '#e1e4e8', height: 1}} />
+            {
+              currentIssueComments.map((item, idx) => {
+                return (
+                    <div key={item.node.id.substr(8)} style={{borderBottom: '1px #e1e4e8 solid', marginBottom: 18, padding: 12}}>
+                      <div style={{marginBottom: 8}}>
+                        <span style={{color: 'gray', fontWeight: 'bold'}}>{item.node.author.login } {timeago().format( item.node.createdAt )}</span>
+                      </div>
+                      <div style={{maxHeight: 100, overflow: 'scroll'}}>{item.node.body}</div>
+                    </div>
+                )
+              })
+            }
           </div>
         </div>
     )}
 }
 export default IssuesList;
-
-//const mapStateToProps = state => ({buddies: state.peers.get('u'), posts: state.statusFeed, profile: state.profile});
-//const mapDispatchToProps = dispatch => bindActionCreators({addOneStatus, addManyStatus, replyStatus, clearOtherStatus, delStatus}, dispatch);
-//export default connect(mapStateToProps, mapDispatchToProps)(BuddyStatus);
