@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import timeago from 'timeago.js';
 
-const RepoList = ({repoInfo, ownRepoCount, isShort, repoClickHanlder, defaultRepoIdx}) => {
+const RepoList = ({changeTab, repoInfo, ownRepoCount, isShort, repoClickHanlder, defaultRepoIdx}) => {
   var style;
   return (
       <ul style={{paddingLeft: 0}}>
@@ -21,7 +21,7 @@ const RepoList = ({repoInfo, ownRepoCount, isShort, repoClickHanlder, defaultRep
 
           style.paddingBottom = 24;
           return (
-              <li key={idx} className='repoItem' onClick={() => repoClickHanlder(idx)}
+              <li key={idx} className='repoItem' onClick={() => {repoClickHanlder(idx); changeTab("commit")}}
                   style={style}>
                 <div style={{display: 'inline-block', marginBottom: 4, boxSizing: 'border-box'}}>
                   {idx >= ownRepoCount ? <span style={{marginRight: 20}}>★</span> : null}<h3 style={{display: 'inline-block', fontSize: 20, fontWeight: 600}}>{item.name}</h3>

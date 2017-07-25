@@ -140,7 +140,7 @@ const FeedWithData  = graphql(gql`{
           }
         }
       }
-}`, { options: { notifyOnNetworkStatusChange: true } })(Feed);
+}`, { options: { notifyOnNetworkStatusChange: false } })(Feed);
 
 function createClient() {
   const networkInterface = createNetworkInterface({

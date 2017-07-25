@@ -30,7 +30,7 @@ class Profile extends Component {
             </ul>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            <RepoList repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
+            <RepoList changeTab={this.props.changeTab} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
         </div>
     )}
