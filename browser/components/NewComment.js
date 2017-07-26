@@ -6,7 +6,10 @@ import TextField from 'material-ui/TextField';
 class NewComment extends Component {
   constructor(props) {
     super(props);
-    this.state = {comment: ''};
+    this.state = {
+      comment: '',
+      submitting: false
+    };
   }
 
   handleChange = e => {
@@ -17,21 +20,30 @@ class NewComment extends Component {
     if (this.state.comment.trim() == '') {
       return
     }
+    this.setState({submitting: true});
     this.props.mutate({
       variables: {subjectId: this.props.subjectId, body: this.state.comment}
     })
     .then(({data}) => {
-          this.setState({comment: ''});
+          this.setState({comment: '', submitting: false});
     }).catch(err => {
-          console.log('error: ', err)
+          console.log('error: ', err);
+          this.setState({submitting: false});
     })
+  };
+
+  componentDidMount = () => {
+    this._input.focus()
   };
 
   render (){
     return (
         <div style={{marginBottom: 28}}>
-          <TextField id="newComment" value={this.state.comment} multiLine={true} rowsMax={2} rows={2} style={{width: '100%'}} onChange={this.handleChange} hintText='Leave a comment' maxLength='300'/>
-          <RaisedButton onClick={this.onClick} disabled={!this.props.subjectId} label="submit comment" primary={true} style={{margin: '16 0'}} />
+          <TextField id="newComment" value={this.state.comment} ref={c => this._input = c}
+                     multiLine={true} rowsMax={2} rows={2} style={{width: '100%'}}
+                     onChange={this.handleChange} hintText='Leave a comment' maxLength='300'/>
+          <RaisedButton onClick={this.onClick} disabled={!this.props.subjectId || this.state.submitting}
+                        label={this.state.submitting ? "submitting..." : "submit comment"} primary={true} style={{margin: '16 0'}} />
         </div>
     )
   }

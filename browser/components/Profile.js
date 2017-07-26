@@ -28,6 +28,14 @@ class Profile extends Component {
               <li style={{paddingTop: 4}}>{data.email}</li>
               <li style={{paddingTop: 4}}>{data.websiteUrl}</li>
             </ul>
+            <ul style={{listStyle: 'none', paddingTop: 16, paddingBottom: 16, borderTop: '1px #e1e4e8 solid', paddingLeft: 0, marginTop: 0, marginBottom: 0}}>
+              <li style={{paddingTop: 4}}>my own repos: {data.repositories.totalCount}</li>
+              <li style={{paddingTop: 4}}>starred repos: {data.starredRepositories.totalCount}</li>
+              <li style={{paddingTop: 4}}>contributed repos: {data.contributedRepositories.totalCount}</li>
+              <li style={{paddingTop: 4}}>watching repos: {data.watching.totalCount}</li>
+              <li style={{paddingTop: 4}}>followers: {data.followers.totalCount}</li>
+              <li style={{paddingTop: 4}}>following: {data.following.totalCount}</li>
+            </ul>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
             <RepoList changeTab={this.props.changeTab} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>

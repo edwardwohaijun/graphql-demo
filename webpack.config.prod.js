@@ -40,7 +40,21 @@ const config = {
   },
 
   plugins: [
-    new ExtractTextPlugin('css/chainedCommentsStyle.css', {allChunks: true}),
+    new ExtractTextPlugin('css/chainedGraphqlDemoStyle.css', {allChunks: true}),
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      compress:{warnings: false}, // drop_console: true // 等到以后代码稳定了, 再drop. 亦可使用 strip-loader, which also strip debug('....'), 亦可用 babel-plugin-remove-console 来drop console.
+      comments: false,
+      mangle: { // reduce local function and variable names to a minimum.
+        screw_ie8: true,
+        except: ['$', 'webpackJsonp']
+      }
+    }),
+    new webpack.DefinePlugin({
+      'process.env':{
+        'NODE_ENV': JSON.stringify('production'),
+      }
+    })
   ]
 };
 module.exports = config;
