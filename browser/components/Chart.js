@@ -66,7 +66,6 @@ class Chart extends Component {
 
   componentDidMount = () => {
     options.drilldown = fillDrillDown(this.props.data, this.state.drilldownBy);
-    console.log('drilldown: ', options);
 
     Highcharts.setOptions({
       lang: {drillUpText: '◁ Back to {series.name}'}
@@ -82,7 +81,6 @@ class Chart extends Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     if (prevState.drilldownBy != this.state.drilldownBy){ // without this condition, the following code would run twice when this component is loaded
-      console.log('old drilldownby/new: ', prevState.drilldownBy, '/', this.state.drilldownBy);
       options.drilldown = fillDrillDown(this.props.data, this.state.drilldownBy);
 
       Highcharts.setOptions({
@@ -98,16 +96,15 @@ class Chart extends Component {
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
-            <RepoList changeTab={()=>{}} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={true} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
-          </div>
-          <div style={{width: 735, paddingLeft: 40}}>
-            <span>Drill down by:</span>
-            <RadioButtonGroup style={{marginTop: 20}} onChange={this.onSelect} name="drillDownBy" defaultSelected="issues">
+            <span style={{marginLeft: 50}}>Drill down by:</span>
+            <RadioButtonGroup style={{marginLeft: 50, marginTop: 20}} onChange={this.onSelect} name="drillDownBy" defaultSelected="issues">
               <RadioButton value="issues" label="issues" style={styles.radioButton}/>
               <RadioButton value="forks" label="forks" style={styles.radioButton}/>
               <RadioButton value="stargazers" label="stargazers" style={styles.radioButton}/>
               <RadioButton value="watchers" label="watchers" style={styles.radioButton} />
             </RadioButtonGroup>
+          </div>
+          <div style={{width: 735, paddingLeft: 40}}>
             <div id='chart-container'></div>
           </div>
         </div>

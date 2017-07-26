@@ -58,11 +58,11 @@ class Main extends Component {
     console.log('data from github: ', this.props.data);
     return (
         <div>
-          <TextField hintText="Github login name" floatingLabelText="Github login name"
-                     value={this.state.loginName} onChange={this.handleChange} />
-          <RaisedButton label="Go" primary={true} style={{margin: 12}} disabled={this.props.data.loading} /><br />
           {this.props.data.loading ?
-              <CircularProgress size={80} thickness={4} /> :
+              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <CircularProgress size={80} thickness={4} />
+              </div>
+              :
               this.props.data.error ? <div>error: {this.props.data.error.message}</div> :
               <Tabs value={this.state.currentTab} onChange={this.changeTab}>
                 <Tab label="Profile" value="profile">

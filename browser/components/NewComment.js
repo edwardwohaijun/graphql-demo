@@ -22,7 +22,6 @@ class NewComment extends Component {
     })
     .then(({data}) => {
           this.setState({comment: ''});
-          console.log('got data: ', data)
     }).catch(err => {
           console.log('error: ', err)
     })
