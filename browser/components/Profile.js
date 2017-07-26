@@ -1,7 +1,4 @@
 import React, {Component} from 'react';
-//import {addOneStatus, addManyStatus, replyStatus, clearOtherStatus, delStatus} from '../../actions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import Avatar from 'material-ui/Avatar';
 import RepoList from './RepoList';
 import timeago from 'timeago.js';

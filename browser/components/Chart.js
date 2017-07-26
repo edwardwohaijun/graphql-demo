@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import RepoList from './RepoList';
 
 var Highcharts = require('highcharts');
 const HighchartsDrilldown = require('highcharts/modules/drilldown');
@@ -8,7 +7,7 @@ HighchartsDrilldown(Highcharts);
 
 var options = {
   chart: {height: 480},
-  title: {text: 'Repos by primary language'},
+  title: {text: 'Repos by primary languages'},
   xAxis: {categories: true},
   //drilldown:{},
   legend: {enabled: false},
