@@ -9,9 +9,6 @@ const config = {
     path: path.resolve(__dirname, 'public/build'),
     filename: 'graphql-demo.js'
   },
-  externals: [
-    'canvas', 'jsdom'
-  ],
   module: {
     loaders: [
       {

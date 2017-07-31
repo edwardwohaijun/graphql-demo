@@ -8,6 +8,8 @@ import reducers from './reducers';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {grey500, grey900} from 'material-ui/styles/colors';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 import Main from './Main'
 
 import {ApolloClient, createNetworkInterface } from 'apollo-client';
@@ -36,112 +38,6 @@ const muiTheme = getMuiTheme({
   tabs: {backgroundColor: '#E0E0E0', selectedTextColor: grey900, textColor: grey500}
 });
 
-const Feed = ({data}) => {
-  return  <MuiThemeProvider muiTheme={muiTheme}><Main data={data} /></MuiThemeProvider>
-};
-const FeedWithData  = graphql(gql`{
-      user(login: "edwardwohaijun"){
-        login, name, avatarUrl, websiteUrl, bio, email, location
-        starredRepositories(first: 10) {
-          totalCount
-          edges{
-            node{
-              id
-              ref(qualifiedName: "master") {
-                target {
-                  ... on Commit {
-                    history(first: 30){
-                      pageInfo {
-                        hasNextPage, hasPreviousPage, startCursor, endCursor
-                      }
-                      edges{
-                        node {
-                          oid, message
-                          author{name, email, date}
-                        }
-                        cursor
-                      }
-                    }
-                  }
-                }
-              }
-              name, description, primaryLanguage{color name}, pushedAt
-              stargazers { totalCount }
-              forks { totalCount }
-              watchers { totalCount }
-              issues(last:10, states:OPEN){
-                totalCount
-                edges{
-                  node {
-                    id, author{login, avatarUrl}, createdAt, title, body
-                    comments(first:10){
-                      totalCount
-                      edges{
-                        node{
-                          author{login, avatarUrl}, body, createdAt, id, authorAssociation
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        contributedRepositories { totalCount }
-        followers { totalCount }
-        following { totalCount }
-        watching { totalCount }
-        repositories(first: 5){
-          totalCount
-          edges{
-            node{
-              id
-              ref(qualifiedName: "master") {
-                target {
-                  ... on Commit {
-                    history(first: 30){
-                      pageInfo {
-                        hasNextPage, hasPreviousPage, startCursor, endCursor
-                      }
-                      edges{
-                        node {
-                          oid, message
-                          author{name, email, date}
-                        }
-                        cursor
-                      }
-                    }
-                  }
-                }
-              }
-              name, description, primaryLanguage{color name}, pushedAt
-              stargazers { totalCount }
-              forks { totalCount }
-              watchers { totalCount }
-              issues(last:10, states:OPEN){
-                totalCount
-                edges{
-                  node {
-                    id, author{login, avatarUrl}, createdAt, title, body
-                    comments(first:10){
-                      totalCount
-                      edges{
-                        node{
-                          author{login, avatarUrl}, body, createdAt, id, authorAssociation
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-}`, { options: { notifyOnNetworkStatusChange: false } })(Feed);
-
 function createClient() {
   const networkInterface = createNetworkInterface({
     uri: 'https://api.github.com/graphql'
@@ -164,13 +60,27 @@ function createClient() {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {loginName: 'edwardwohaijun'};
   }
+
+  clickHandler = evt => {
+    var loginEle = document.getElementById('loginName');
+    console.log('loginEle: ', loginEle.value);
+    this.setState({
+      loginName: loginEle.value
+    });
+  };
 
   render() {
     return (
       <ApolloProvider client={createClient()} store={store}>
-        <FeedWithData />
+        <MuiThemeProvider muiTheme={muiTheme}>
+          <div>
+            <TextField id="loginName" defaultValue="edwardwohaijun" floatingLabelText="Input a valid github login name"/>
+            <RaisedButton onTouchTap={this.clickHandler} label="Go" primary={true} style={{margin: 12}} />
+            <Main login={this.state.loginName}/>
+          </div>
+        </MuiThemeProvider>
       </ApolloProvider>
     );
   }

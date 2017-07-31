@@ -3,8 +3,14 @@ import Avatar from 'material-ui/Avatar';
 import RepoList from './RepoList';
 import timeago from 'timeago.js';
 
-const Profile = props => {
-  var data = props.data;
+class Profile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render (){
+    var data = this.props.data;
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
@@ -29,9 +35,9 @@ const Profile = props => {
             </ul>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            <RepoList changeTab={props.changeTab} repoInfo={props.repoInfo} ownRepoCount={props.ownRepoCount} isShort={false} repoClickHanlder={props.repoClickHanlder} defaultRepoIdx={props.defaultRepoIdx}/>
+            <RepoList changeTab={this.props.changeTab} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={false} repoClickHanlder={this.props.repoClickHanlder} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
         </div>
-    )};
-
+    )}
+}
 export default Profile;
