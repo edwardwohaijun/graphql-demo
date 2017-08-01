@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import timeago from 'timeago.js';
 
-const RepoList = ({changeTab, repoInfo, ownRepoCount, isShort, repoClickHanlder, defaultRepoIdx}) => {
+const RepoList = ({changeTab, repoInfo, ownRepoCount, isShort, repoClickHandler, defaultRepoIdx}) => {
   var style;
   return (
       <ul style={{paddingLeft: 0}}>
@@ -10,10 +10,11 @@ const RepoList = ({changeTab, repoInfo, ownRepoCount, isShort, repoClickHanlder,
           if (defaultRepoIdx == idx) style.backgroundColor = '#eee';
           if (isShort) {
             return (
-                <li key={idx} className='repoItem' onClick={() => repoClickHanlder(idx)}
+                <li key={idx} className='repoItem' onClick={() => repoClickHandler(idx, item.id)}
                     style={style}>
                   <div style={{display: 'inline-block', marginBottom: 4, boxSizing: 'border-box'}}>
-                    {idx >= ownRepoCount ? <span style={{marginRight: 20}}>★</span> : null}<h3 style={{display: 'inline-block',fontSize: 20, fontWeight: 600}}>{item.name}</h3>
+                    {idx >= ownRepoCount ? <span style={{marginRight: 20}}>★</span> : null}<h3
+                      style={{display: 'inline-block',fontSize: 20, fontWeight: 600}}>{item.name}</h3>
                   </div>
                 </li>
             )
@@ -21,7 +22,7 @@ const RepoList = ({changeTab, repoInfo, ownRepoCount, isShort, repoClickHanlder,
 
           style.paddingBottom = 24;
           return (
-              <li key={idx} className='repoItem' onClick={() => {repoClickHanlder(idx); changeTab("commit")}}
+              <li key={idx} className='repoItem' onClick={() => {repoClickHandler(idx, item.id); changeTab("commit")}}
                   style={style}>
                 <div style={{display: 'inline-block', marginBottom: 4, boxSizing: 'border-box'}}>
                   {idx >= ownRepoCount ? <span style={{marginRight: 20}}>★</span> : null}<h3 style={{display: 'inline-block', fontSize: 20, fontWeight: 600}}>{item.name}</h3>

@@ -29,7 +29,8 @@ const Profile = props => {
             </ul>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            <RepoList changeTab={props.changeTab} repoInfo={props.repoInfo} ownRepoCount={props.ownRepoCount} isShort={false} repoClickHanlder={props.repoClickHanlder} defaultRepoIdx={props.defaultRepoIdx}/>
+            <RepoList changeTab={props.changeTab} repoInfo={props.repoInfo} ownRepoCount={props.ownRepoCount} isShort={false}
+                      repoClickHandler={props.repoClickHandler} defaultRepoIdx={props.defaultRepoIdx}/>
           </div>
         </div>
     )};

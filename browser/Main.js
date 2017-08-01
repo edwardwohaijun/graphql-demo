@@ -13,41 +13,41 @@ import Chart from './components/Chart';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-var repoInfo = [], repoDetails = [], ownRepoCount = 0; // I need this value to split my own repo with my starred repo(with a star label)
+var repoInfo = [], repoDetails = [], ownRepoCount = 0; // I need ownRepoCount to split my own repo with my starred repo(with a star label)
+// repoDetails is mean to be deleted
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
       defaultRepoIdx: 0,
+      defaultRepoID: '',
       currentTab: "profile"
     };
   }
 
-  changeTab = tabValue => {
-    this.setState({currentTab: tabValue})
-  };
-  handleRepoClick = idx => {
-    this.setState({defaultRepoIdx: idx})
-  };
+  changeTab = tabValue => this.setState({currentTab: tabValue});
+  handleRepoClick = (idx, ID) => this.setState({defaultRepoIdx: idx, defaultRepoID: ID});
 
   componentWillReceiveProps = nextProps => {
     if (!nextProps.data.loading && !nextProps.data.error){
-      nextProps.data.user.repositories.edges.forEach(r =>
-              repoInfo.push({
-                name: r.node.name, description: r.node.description,
-                primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt })
-      );
+      nextProps.data.user.repositories.edges.forEach((r, idx) => {
+        if (idx == 0) this.setState({defaultRepoID: r.node.id});
+
+        repoInfo.push({
+          name: r.node.name, description: r.node.description, id: r.node.id,
+          primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt
+        })
+      });
       ownRepoCount = nextProps.data.user.repositories.edges.length;
       nextProps.data.user.starredRepositories.edges.forEach(r =>
               repoInfo.push({
-                name: r.node.name, description: r.node.description,
+                name: r.node.name, description: r.node.description, id: r.node.id,
                 primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt })
       );
       repoDetails = nextProps.data.user.repositories.edges.concat(nextProps.data.user.starredRepositories.edges);
     }
   };
-// <Profile changeTab={this.changeTab} data={this.props.data.user} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
 
   render() {
     console.log('data from github: ', this.props.data);
@@ -62,16 +62,20 @@ class Main extends Component {
                       :
                       <Tabs value={this.state.currentTab} onChange={this.changeTab}>
                         <Tab label="Profile" value="profile">
-                          <Profile changeTab={this.changeTab} data={this.props.data.user} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                          <Profile changeTab={this.changeTab} data={this.props.data.user} repoInfo={repoInfo} ownRepoCount={ownRepoCount}
+                                   repoClickHandler={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                         <Tab label="Commit history" value="commit">
-                          <CommitsHist data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                          <CommitsHist repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHandler={this.handleRepoClick}
+                                       defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                         <Tab label="Issue list" value="issue">
-                          <IssuesList data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                          <IssuesList data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHandler={this.handleRepoClick}
+                                      defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                         <Tab label="Charts" value="chart">
-                          <Chart data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHanlder={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx}/>
+                          <Chart data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHandler={this.handleRepoClick}
+                                 defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                       </Tabs>
           }
