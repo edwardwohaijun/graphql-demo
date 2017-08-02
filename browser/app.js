@@ -14,6 +14,7 @@ import Main from './Main'
 
 import {ApolloClient, createNetworkInterface } from 'apollo-client';
 import {gql, graphql, ApolloProvider} from 'react-apollo';
+import { IntrospectionFragmentMatcher } from 'react-apollo';
 
 var initialState = {
   comments: fromJS([])
@@ -38,6 +39,23 @@ const muiTheme = getMuiTheme({
   tabs: {backgroundColor: '#E0E0E0', selectedTextColor: grey900, textColor: grey500}
 });
 
+const myFragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData: {
+    __schema: {
+      types: [
+        {
+          kind: "INTERFACE",
+          name: "Node",
+          possibleTypes: [
+            { name: "Commit" },
+            { name: "Repository" }
+          ]
+        }
+      ]
+    }
+  }
+});
+
 function createClient() {
   const networkInterface = createNetworkInterface({
     uri: 'https://api.github.com/graphql'
@@ -53,6 +71,7 @@ function createClient() {
     }
   }]);
   return new ApolloClient({
+    fragmentMatcher: myFragmentMatcher,
     networkInterface: networkInterface
   });
 }
@@ -63,13 +82,7 @@ class App extends Component {
     this.state = {loginName: 'edwardwohaijun'};
   }
 
-  clickHandler = evt => {
-    var loginEle = document.getElementById('loginName');
-    console.log('loginEle: ', loginEle.value);
-    this.setState({
-      loginName: loginEle.value
-    });
-  };
+  clickHandler = evt => this.setState({loginName: document.getElementById('loginName').value});
 
   render() {
     return (

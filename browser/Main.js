@@ -13,7 +13,7 @@ import Chart from './components/Chart';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-var repoInfo = [], repoDetails = [], ownRepoCount = 0; // I need ownRepoCount to split my own repo with my starred repo(with a star label)
+var repoDetails = []; // I need ownRepoCount to split my own repo with my starred repo(with a star label)
 // repoDetails is mean to be deleted
 
 class Main extends Component {
@@ -21,7 +21,7 @@ class Main extends Component {
     super(props);
     this.state = {
       defaultRepoIdx: 0,
-      defaultRepoID: '',
+      defaultRepoID: null,
       currentTab: "profile"
     };
   }
@@ -29,38 +29,33 @@ class Main extends Component {
   changeTab = tabValue => this.setState({currentTab: tabValue});
   handleRepoClick = (idx, ID) => this.setState({defaultRepoIdx: idx, defaultRepoID: ID});
 
-  componentWillReceiveProps = nextProps => {
-    if (!nextProps.data.loading && !nextProps.data.error){
-      nextProps.data.user.repositories.edges.forEach((r, idx) => {
-        if (idx == 0) this.setState({defaultRepoID: r.node.id});
-
+  render() {
+    console.log('data from github: ', this.props.data);
+    var repoInfo = [], pageContent, ownRepoCount = 0;
+    if (this.props.data.error) {
+      pageContent = <div>Error: {this.props.data.error}</div>
+    } else if (this.props.data.loading){
+      pageContent = <div>Loading...</div>
+    }else {
+      repoInfo.length = 0; repoInfo = [];
+      this.props.data.user.repositories.edges.forEach(r => {
         repoInfo.push({
           name: r.node.name, description: r.node.description, id: r.node.id,
           primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt
         })
       });
-      ownRepoCount = nextProps.data.user.repositories.edges.length;
-      nextProps.data.user.starredRepositories.edges.forEach(r =>
-              repoInfo.push({
-                name: r.node.name, description: r.node.description, id: r.node.id,
-                primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt })
-      );
-      repoDetails = nextProps.data.user.repositories.edges.concat(nextProps.data.user.starredRepositories.edges);
-    }
-  };
 
-  render() {
-    console.log('data from github: ', this.props.data);
-    return (
-        <div>
-          {
-              this.props.data.error
-                  ? <span>error: {this.props.data.error}</span>
-                  :
-                  this.props.data.loading
-                      ? <span>loading...</span>
-                      :
-                      <Tabs value={this.state.currentTab} onChange={this.changeTab}>
+      ownRepoCount = this.props.data.user.repositories.edges.length;
+      this.props.data.user.starredRepositories.edges.forEach(r => {
+        repoInfo.push({
+          name: r.node.name, description: r.node.description, id: r.node.id,
+          primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt
+        })
+      });
+
+      repoDetails = this.props.data.user.repositories.edges.concat(this.props.data.user.starredRepositories.edges);
+
+      pageContent = <Tabs value={this.state.currentTab} onChange={this.changeTab}>
                         <Tab label="Profile" value="profile">
                           <Profile changeTab={this.changeTab} data={this.props.data.user} repoInfo={repoInfo} ownRepoCount={ownRepoCount}
                                    repoClickHandler={this.handleRepoClick} defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
@@ -78,9 +73,9 @@ class Main extends Component {
                                  defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                       </Tabs>
-          }
-        </div>
-    );
+    }
+
+    return pageContent ;
   }
 }
 
