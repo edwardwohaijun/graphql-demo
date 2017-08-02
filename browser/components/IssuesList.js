@@ -3,7 +3,9 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import timeago from 'timeago.js';
 import RepoList from './RepoList';
+import { gql, graphql } from 'react-apollo';
 import NewComment from './NewComment';
+import issueListQL from '../graphql/issueListQL';
 
 class IssuesList extends Component {
   constructor(props) {
@@ -21,17 +23,72 @@ class IssuesList extends Component {
   };
 
   render (){
-
-
     return (
         <div style={{marginTop: 20, display: 'flex'}}>
           <div style={{width: 245}}>
-            repo list
+            <RepoList changeTab={()=>{}} repoInfo={this.props.repoInfo} ownRepoCount={this.props.ownRepoCount} isShort={true}
+                      repoClickHandler={this.props.repoClickHandler} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            issue list
+            {this.props.defaultRepoID ? <IssuesWithData id={this.props.defaultRepoID}/> : <span>tada</span>}
           </div>
         </div>
     )}
 }
 export default IssuesList;
+
+class Issues extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render(){
+    console.log('this.props.: ', this.props);
+    return (
+        <div>
+          {
+
+          }
+        </div>)}  ;
+}
+
+const IssuesWithData = graphql(issueListQL, {
+  options: ({id}) => {
+    return {
+      variables: {id}
+    }
+  },
+  props: ({data: {loading, issueList, fetchMore}}) => {
+    return {
+      loading,
+      issueList,
+      loadMoreEntries: () => {
+        return fetchMore({
+          query: issueListQL,
+          variables: {
+            //cursor: issueList.ref.target.history.pageInfo.endCursor,
+            id: issueList.id
+          },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            const newEdges = fetchMoreResult.issueList.ref.target.history.edges;
+            const pageInfo = fetchMoreResult.issueList.ref.target.history.pageInfo;
+            var ref = fetchMoreResult.issueList.ref;
+            ref.target.history.edges = [...previousResult.issueList.ref.target.history.edges, ...newEdges];
+            ref.target.history.pageInfo = pageInfo;
+            return {
+              issueList: {
+                id: fetchMoreResult.issueList.id,
+                //ref: fetchMoreResult.commitHist.ref,
+                ref: ref,
+                __typename: "Repository",
+                //edges: [...previousResult.commitHist.ref.target.history.edges, ...newEdges],
+                //pageInfo
+              }
+            };
+          }
+        });
+      }
+    };
+  }
+})(Issues);
