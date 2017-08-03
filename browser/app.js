@@ -72,7 +72,8 @@ function createClient() {
   }]);
   return new ApolloClient({
     fragmentMatcher: myFragmentMatcher,
-    networkInterface: networkInterface
+    networkInterface: networkInterface,
+    dataIdFromObject: object => object.id
   });
 }
 

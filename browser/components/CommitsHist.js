@@ -36,10 +36,10 @@ constructor(props) {
   }
 
 render(){
-console.log('this.props.: ', this.props);
+console.log('this.props in commitsHist: ', this.props);
 return (
     <div>
-      {
+      {// forget to check this.props.error
         this.props.loading
             ? <span>loading</span>
             : !this.props.commitHist.ref
@@ -69,7 +69,7 @@ const CommitsWithData = graphql(commitHistQL, {
       commitHist,
       loadMoreEntries: () => {
         return fetchMore({
-          query: commitHistQL,
+          query: commitHistQL, // redundant
           variables: {
             cursor: commitHist.ref.target.history.pageInfo.endCursor,
             id: commitHist.id
