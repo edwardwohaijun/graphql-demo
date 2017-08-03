@@ -4,6 +4,7 @@ export default gql`
   query CurrentUserProfile($login: String!) {
     user(login: $login){
       login, name, avatarUrl, websiteUrl, bio, email, location
+
       contributedRepositories { totalCount }
       followers { totalCount }
       following { totalCount }
@@ -14,6 +15,7 @@ export default gql`
         edges{
           node{
             id name, description, primaryLanguage{color name}, pushedAt
+            issues { totalCount }
             stargazers { totalCount }
             forks { totalCount }
             watchers { totalCount }
@@ -26,6 +28,7 @@ export default gql`
         edges{
           node{
             id name, description, primaryLanguage{color name}, pushedAt
+            issues { totalCount }
             stargazers { totalCount }
             forks { totalCount }
             watchers { totalCount }

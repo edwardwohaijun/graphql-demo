@@ -14,7 +14,6 @@ class IssuesList extends Component {
       selectedIssueIdx: 0
     };
   }
-  handleSelect = (event, index, value) => this.setState({selectedIssueIdx: value});
 
   componentWillReceiveProps = nextProps => { // when we are at repoA which has 10 issues, looking at issue 10, then switch to repoB which has only 2 issues
     if (nextProps.defaultRepoIdx != this.props.defaultRepoIdx){ // but issueIdx still points to 10, thus, whenever user switch to other repo, reset "selectedIssueIdx" to 0
@@ -30,7 +29,7 @@ class IssuesList extends Component {
                       repoClickHandler={this.props.repoClickHandler} defaultRepoIdx={this.props.defaultRepoIdx}/>
           </div>
           <div style={{width: 735, paddingLeft: 40}}>
-            {this.props.defaultRepoID ? <IssuesWithData id={this.props.defaultRepoID}/> : <span>tada</span>}
+            {this.props.defaultRepoID ? <IssuesWithData id={this.props.defaultRepoID}/> : null}
           </div>
         </div>
     )}
@@ -47,7 +46,6 @@ class Issues extends Component {
   handleSelect = (event, index, value) => this.setState({selectedIssueIdx: value});
 
   render(){
-    console.log('issueList: this.props.: ', this.props);
     if (this.props.loading){
       return <span>loading</span>
     }

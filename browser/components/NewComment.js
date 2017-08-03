@@ -54,7 +54,6 @@ class NewComment extends Component {
   };
 
   render (){
-    console.log('props of newComment: ', this.props);
     return (
         <div style={{marginBottom: 28}}>
           <TextField id="newComment" value={this.state.comment} ref={c => this._input = c}

@@ -13,9 +13,6 @@ import Chart from './components/Chart';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-var repoDetails = []; // I need ownRepoCount to split my own repo with my starred repo(with a star label)
-// repoDetails is mean to be deleted
-
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -30,8 +27,7 @@ class Main extends Component {
   handleRepoClick = (idx, ID) => this.setState({defaultRepoIdx: idx, defaultRepoID: ID});
 
   render() {
-    console.log('data from github: ', this.props.data);
-    var repoInfo = [], pageContent, ownRepoCount = 0;
+    var repoInfo = [], repoDetails = [], pageContent, ownRepoCount = 0;
     if (this.props.data.error) {
       pageContent = <div>Error: {this.props.data.error}</div>
     } else if (this.props.data.loading){
@@ -42,7 +38,12 @@ class Main extends Component {
         repoInfo.push({
           name: r.node.name, description: r.node.description, id: r.node.id,
           primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt
-        })
+        });
+        repoDetails.push({
+          name: r.node.name, primaryLanguage: r.node.primaryLanguage,
+          issues: r.node.issues.totalCount, forks: r.node.forks.totalCount,
+          stargazers: r.node.stargazers.totalCount, watchers: r.node.watchers.totalCount
+        });
       });
 
       ownRepoCount = this.props.data.user.repositories.edges.length;
@@ -50,10 +51,15 @@ class Main extends Component {
         repoInfo.push({
           name: r.node.name, description: r.node.description, id: r.node.id,
           primaryLanguage: r.node.primaryLanguage, pushedAt: r.node.pushedAt
-        })
+        });
+        repoDetails.push({
+          name: r.node.name, primaryLanguage: r.node.primaryLanguage,
+          issues: r.node.issues.totalCount, forks: r.node.forks.totalCount,
+          stargazers: r.node.stargazers.totalCount, watchers: r.node.watchers.totalCount
+        });
       });
 
-      repoDetails = this.props.data.user.repositories.edges.concat(this.props.data.user.starredRepositories.edges);
+      repoDetails =    this.props.data.user.repositories.edges.concat(this.props.data.user.starredRepositories.edges);
 
       pageContent = <Tabs value={this.state.currentTab} onChange={this.changeTab}>
                         <Tab label="Profile" value="profile">
@@ -69,7 +75,7 @@ class Main extends Component {
                                       defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                         <Tab label="Charts" value="chart">
-                          <Chart data={repoDetails} repoInfo={repoInfo} ownRepoCount={ownRepoCount} repoClickHandler={this.handleRepoClick}
+                          <Chart data={repoDetails} ownRepoCount={ownRepoCount} repoClickHandler={this.handleRepoClick}
                                  defaultRepoIdx={this.state.defaultRepoIdx} defaultRepoID={this.state.defaultRepoID}/>
                         </Tab>
                       </Tabs>

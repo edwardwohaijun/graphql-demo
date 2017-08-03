@@ -36,7 +36,6 @@ constructor(props) {
   }
 
 render(){
-console.log('this.props in commitsHist: ', this.props);
 return (
     <div>
       {// forget to check this.props.error
