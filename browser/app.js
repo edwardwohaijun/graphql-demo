@@ -70,6 +70,16 @@ function createClient() {
       next()
     }
   }]);
+  networkInterface.useAfter([{
+    applyAfterware({ response }, next) {
+      if (response.status === 401) {
+        alert("Unauthorized access to https://api.github.com/graphql, please save a valid github-token in your localStorage, then retry.");
+      } else if (response.status === 500 ) {
+        alert("Server error, please retry later.");
+      }
+      next();
+    }
+  }]);
   return new ApolloClient({
     fragmentMatcher: myFragmentMatcher,
     networkInterface: networkInterface,

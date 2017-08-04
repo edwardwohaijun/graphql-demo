@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var server = require('http').createServer(app).listen(3456, function(){
-  console.log('server started.')
+  console.log('server started on port: 3456')
 });
 
 app.use('/', routes);
